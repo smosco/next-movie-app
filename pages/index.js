@@ -3,25 +3,25 @@ import { useRouter } from "next/router";
 import Seo from "@/components/Seo";
 import { useState, useEffect } from "react";
 
-export default function Home() {
-  const [movies, setMovies] = useState();
-  const router = useRouter();
-  const onClick = (id, title) => {
-    router.push(`/movies/${title}/${id}`);
-  };
-
-  useEffect(() => {
-    (async () => {
-      const { results } = await (await fetch(`/api/movies`)).json();
-      setMovies(results);
-    })();
-  }, []);
+export default function Home({ results }) {
+  //const [movies, setMovies] = useState();
+  //const router = useRouter();
+  //const onClick = (id, title) => {
+  //  router.push(`/movies/${title}/${id}`);
+  //};
+  //
+  //useEffect(() => {
+  //  (async () => {
+  //    const { results } = await (await fetch(`/api/movies`)).json();
+  //    setMovies(results);
+  //  })();
+  //}, []);
 
   return (
     <div className="container">
       <Seo title="Home" />
-      {!movies && <div>Loading...</div>}
-      {movies?.map((movie) => (
+      {/* {!movies && <div>Loading...</div>} */}
+      {results?.map((movie) => (
         <div
           onClick={() => onClick(movie.id, movie.original_title)}
           className="movie"
@@ -61,4 +61,15 @@ export default function Home() {
       `}</style>
     </div>
   );
+}
+
+export async function getServerSideProps() {
+  const { results } = await (
+    await fetch(`http://localhost:3000//api/movies`)
+  ).json();
+  return {
+    props: {
+      results,
+    },
+  };
 }
